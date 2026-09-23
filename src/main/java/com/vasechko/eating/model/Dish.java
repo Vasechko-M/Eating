@@ -23,7 +23,16 @@ public class Dish {
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<DishIngredient> ingredients = new HashSet<>();
 
-    // пример помощи: проверить доступность блюда по запасам на кухне
+    // Helper методы для управления связями
+    public void addIngredient(Product product, int quantity) {
+        DishIngredient ingredient = new DishIngredient();
+        ingredient.setProduct(product);
+        ingredient.setQuantityRequired(quantity);
+        ingredient.setDish(this);
+        ingredients.add(ingredient);
+    }
+
+    // пример: проверить доступность блюда по запасам на кухне
     public boolean isAvailable() {
         return ingredients.stream().allMatch(i ->
                 i.getProduct() != null && i.getProduct().getQuantity() >= i.getQuantityRequired()
